@@ -1,18 +1,17 @@
 class LoginModel {
-  async checkLoginEmail(email: string) {
+  async register(email: string) {
     try {
-      return true;
-    } catch (err) {
-      throw new Error(err.message);
-    }
+    } catch (error) {}
   }
 
-  async sendEmailPassword(email: string) {
+  async signIn(email: string) {
     try {
-      return true;
-    } catch (err) {
-      throw new Error(err.message);
-    }
+    } catch (error) {}
+  }
+
+  async getUser() {
+    try {
+    } catch (error) {}
   }
 }
 

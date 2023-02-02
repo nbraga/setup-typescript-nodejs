@@ -1,9 +1,9 @@
 import { compare, hash } from "bcryptjs";
-import { sign } from "jsonwebtoken";
 import { RegisterProps, SignInProps } from "@interfaces/loginProps";
+import { createToken } from "src/utils/CreateToken";
 
 class LoginService {
-  async register({ name, lastName, email, password }: RegisterProps) {
+  async register({ name, email, password }: RegisterProps) {
     if (!email) {
       throw new Error("Email obrigatório");
     }
@@ -19,17 +19,13 @@ class LoginService {
   }
 
   async signIn({ email, password }: SignInProps) {
-    /*  const token = sign(
-      {
-        name: user.name,
-        email: user.email,
-      },
-      process.env.JTW_SECRET,
-      {
-        subject: user.id,
-        expiresIn: "1d",
-      }
-    ); */
+    const token = createToken(email);
+
+    const passwordMatch = await compare(password, password);
+
+    if (!passwordMatch) {
+      throw new Error("Usuário ou senha incorreto!");
+    }
 
     return true;
   }

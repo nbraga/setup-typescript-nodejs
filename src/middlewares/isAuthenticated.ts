@@ -1,16 +1,29 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
-export const checkToken = (req: Request, res: Response, next: NextFunction) => {
+import { verify } from "jsonwebtoken";
+
+interface Payload {
+  sub: string;
+}
+
+export const isAuthenticated = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const token = req.headers.authorization;
 
-  if (!token)
+  if (!token) {
     return res.status(401).send({ auth: false, message: "Token inválido" });
+  }
 
-  jwt.verify(token, process.env.SECRET, function (err, decoded) {
-    if (err)
-      return res.status(401).send({ auth: false, message: "Token inválido" });
+  try {
+    const { sub } = verify(token, process.env.JTW_SECRET) as Payload;
 
-    next();
-  });
+    req.id_user = sub;
+
+    return next();
+  } catch (err) {
+    return res.status(401).send({ auth: false, message: "Token inválido" });
+  }
 };
